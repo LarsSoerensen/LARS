@@ -268,7 +268,7 @@ class Application(tk.Frame):
         self.button_add = tk.Button(self.frame, text = "Add an Ion Accounting File", command = self.Add_PLGS)
         self.button_add.grid(column = 0, row = 5, padx = 5, pady = 5, sticky = "n, w",)
         #The remove PLGS button        
-        self.button_remove = tk.Button(self.frame, text = "Remove a Ion Accounting File", command = self.Delete_PLGS)
+        self.button_remove = tk.Button(self.frame, text = "Remove an Ion Accounting File", command = self.Delete_PLGS)
         self.button_remove.grid(column = 1, row = 5, padx = 5, pady = 5, sticky = "n, w",)
         #The process button        
         self.button_process = tk.Button(self.frame, text = "Run the LARS processing", command = self.Process)
