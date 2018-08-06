@@ -322,19 +322,19 @@ class Application(tk.Frame):
         self.MinimumIntensity_Entry.grid(column = 4, row = 6, sticky = "n, w", padx = 5, pady = 5)
         self.MinimumIntensity_Label = tk.Label(self.frame, text = "Minimum Intensity")
         self.MinimumIntensity_Label.grid(column = 3, row = 6, sticky = "n, w", padx = 5, pady = 5)
-        self.MinimumIntensity_Entry.insert(0, 0)
+        self.MinimumIntensity_Entry.insert(0, 100)
         #The Minimum products Entry
         self.MinimumProducts_Entry = tk.Entry(self.frame)
         self.MinimumProducts_Entry.grid(column = 4, row = 7, sticky = "n, w", padx = 5, pady = 5)
         self.MinimumProducts_Label = tk.Label(self.frame, text = "Minimum Products")
         self.MinimumProducts_Label.grid(column = 3, row = 7, sticky = "n, w", padx = 5, pady = 5)
-        self.MinimumProducts_Entry.insert(0, 0)
+        self.MinimumProducts_Entry.insert(0, 1)
         #The minimum products per amino acid Entry
         self.MinimumProductsPerAminoAcid_Entry = tk.Entry(self.frame)
         self.MinimumProductsPerAminoAcid_Entry.grid(column = 4, row = 8, sticky = "n,w", padx = 5, pady = 5)
         self.MinimumProductsPerAminoAcid_Label = tk.Label(self.frame, text = "Minimum Products Per Amino Acid")
         self.MinimumProductsPerAminoAcid_Label.grid(column = 3, row = 8, sticky = "n,w", padx = 5, pady = 5)
-        self.MinimumProductsPerAminoAcid_Entry.insert(0, 0)
+        self.MinimumProductsPerAminoAcid_Entry.insert(0, 0.01)
         #The minimum Consecutive Products Entry
         self.MinimumConsecutiveProducts_Entry = tk.Entry(self.frame)
         self.MinimumConsecutiveProducts_Entry.grid(column = 4, row = 9, sticky = "n,w", padx = 5, pady = 5)
@@ -346,13 +346,13 @@ class Application(tk.Frame):
         self.MinimumProdIntSum_Entry.grid(column = 4, row = 10, sticky = "n,w", padx = 5, pady = 5)
         self.MinimumProdIntSum_Label = tk.Label(self.frame, text = "Minimum Sum for Identified Products")
         self.MinimumProdIntSum_Label.grid(column = 3, row = 10, sticky = "n,w", padx = 5, pady = 5)
-        self.MinimumProdIntSum_Entry.insert(0, 0)
+        self.MinimumProdIntSum_Entry.insert(0, 50)
         #The minimum score entry
         self.MinimumScore_Entry = tk.Entry(self.frame)
         self.MinimumScore_Entry.grid(column = 4, row = 11, sticky = "n,w", padx = 5, pady = 5)
         self.MinimumScore_Label = tk.Label(self.frame, text = "Minimum Peptide Score")
         self.MinimumScore_Label.grid(column = 3, row = 11, sticky = "n,w", padx = 5, pady = 5)
-        self.MinimumScore_Entry.insert(0, 0)
+        self.MinimumScore_Entry.insert(0, 5.6)
         #The Number of identifications meeting filter criteria's Entry
         self.NoOffReplicates_Entry = tk.Entry(self.frame)
         self.NoOffReplicates_Entry.grid(column = 4, row = 12, sticky = "n,w", padx = 5, pady = 5)
