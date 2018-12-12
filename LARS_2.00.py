@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Created on Mon Oct  6 14:02:59 2014
@@ -322,19 +323,19 @@ class Application(tk.Frame):
         self.MinimumIntensity_Entry.grid(column = 4, row = 6, sticky = "n, w", padx = 5, pady = 5)
         self.MinimumIntensity_Label = tk.Label(self.frame, text = "Minimum Intensity")
         self.MinimumIntensity_Label.grid(column = 3, row = 6, sticky = "n, w", padx = 5, pady = 5)
-        self.MinimumIntensity_Entry.insert(0, 100)
+        self.MinimumIntensity_Entry.insert(0, 0)
         #The Minimum products Entry
         self.MinimumProducts_Entry = tk.Entry(self.frame)
         self.MinimumProducts_Entry.grid(column = 4, row = 7, sticky = "n, w", padx = 5, pady = 5)
         self.MinimumProducts_Label = tk.Label(self.frame, text = "Minimum Products")
         self.MinimumProducts_Label.grid(column = 3, row = 7, sticky = "n, w", padx = 5, pady = 5)
-        self.MinimumProducts_Entry.insert(0, 1)
+        self.MinimumProducts_Entry.insert(0, 0)
         #The minimum products per amino acid Entry
         self.MinimumProductsPerAminoAcid_Entry = tk.Entry(self.frame)
         self.MinimumProductsPerAminoAcid_Entry.grid(column = 4, row = 8, sticky = "n,w", padx = 5, pady = 5)
         self.MinimumProductsPerAminoAcid_Label = tk.Label(self.frame, text = "Minimum Products Per Amino Acid")
         self.MinimumProductsPerAminoAcid_Label.grid(column = 3, row = 8, sticky = "n,w", padx = 5, pady = 5)
-        self.MinimumProductsPerAminoAcid_Entry.insert(0, 0.01)
+        self.MinimumProductsPerAminoAcid_Entry.insert(0, 0)
         #The minimum Consecutive Products Entry
         self.MinimumConsecutiveProducts_Entry = tk.Entry(self.frame)
         self.MinimumConsecutiveProducts_Entry.grid(column = 4, row = 9, sticky = "n,w", padx = 5, pady = 5)
@@ -346,13 +347,13 @@ class Application(tk.Frame):
         self.MinimumProdIntSum_Entry.grid(column = 4, row = 10, sticky = "n,w", padx = 5, pady = 5)
         self.MinimumProdIntSum_Label = tk.Label(self.frame, text = "Minimum Sum for Identified Products")
         self.MinimumProdIntSum_Label.grid(column = 3, row = 10, sticky = "n,w", padx = 5, pady = 5)
-        self.MinimumProdIntSum_Entry.insert(0, 50)
+        self.MinimumProdIntSum_Entry.insert(0, 0)
         #The minimum score entry
         self.MinimumScore_Entry = tk.Entry(self.frame)
         self.MinimumScore_Entry.grid(column = 4, row = 11, sticky = "n,w", padx = 5, pady = 5)
         self.MinimumScore_Label = tk.Label(self.frame, text = "Minimum Peptide Score")
         self.MinimumScore_Label.grid(column = 3, row = 11, sticky = "n,w", padx = 5, pady = 5)
-        self.MinimumScore_Entry.insert(0, 5.6)
+        self.MinimumScore_Entry.insert(0, 0)
         #The Number of identifications meeting filter criteria's Entry
         self.NoOffReplicates_Entry = tk.Entry(self.frame)
         self.NoOffReplicates_Entry.grid(column = 4, row = 12, sticky = "n,w", padx = 5, pady = 5)
@@ -1068,7 +1069,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             
         dict[key] = [column ID, value, value, value], [column ID, value, value, value] .... [column ID, value, value, value]
         """
-        Start_time = datetime.datetime.now()
+        #Start_time = datetime.datetime.now()
         file_dict = {}
         row_list = []
         ID_list = []
@@ -1096,145 +1097,130 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             keys_list.append(key)
         key = keys_list[0]
         header_and_values = file_dict[key]
+        global header
         header = header_and_values[0]
-        number_of_IDs = len(header)
-        if number_of_IDs == 63:
-            index_ID_list = list(range(0,number_of_IDs))
-            for index in index_ID_list:
-                value = header[index_id]
-                ID_list.append(value)
-                index_id +=1
+        header_indexer = []
+        counter = 0
+        for item in header:
+            header_indexer.append((item,counter))
+            counter +=1
+        # Globally defined dictionary so the coloumn index containing values that need to be manipulated and used through out 
+        # the script 
+        global column_dict
+        column_dict = {}
+        for item in header_indexer:
+            if item[0] == 'protein.Entry': # Used to extract Protein Identifiers so they can be presented to the user
+                column_dict['protein_Entry_index'] = item[1]
+            elif item[0] == 'protein.score': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.score'] = item[1]
+            elif item[0] == 'protein.avgMass': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.avgMass'] = item[1]
+            elif item[0] == 'protein.MatchedProducts': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.MatchedProducts'] = item[1]
+            elif item[0] == 'protein.matchedPeptides': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.matchedPeptides'] = item[1]
+            elif item[0] == 'protein.digestPeps': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.digestPeps'] = item[1]
+            elif item[0] == 'protein.seqCover(%)': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.seqCover(%)'] = item[1]
+            elif item[0] == 'protein.MatchedPeptideIntenSum': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.MatchedPeptideIntenSum'] = item[1]
+            elif item[0] == 'protein.top3MatchedPeptideIntenSum': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.top3MatchedPeptideIntenSum'] = item[1]
+            elif item[0] == 'protein.SumForTotalProteins': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein.SumForTotalProteins'] = item[1]
+            elif item[0] == 'peptide.Rank': #Int sum for all identified products used when preparing the final IA file
+                column_dict['peptide.Rank'] = item[1]                
+            elif item[0] == 'protein.MatchedProductIntenSum': #Int sum for all identified products used when preparing the final IA file
+                column_dict['protein_MatchedProductIntenSum_index'] = item[1]
+            elif item[0] == 'peptide.modification': #Int sum for all identified products used when preparing the final IA file
+                column_dict['peptide.modification'] = item[1]
+            elif item[0] == 'peptide.matchType': #Int sum for all identified products used when preparing the final IA file
+                column_dict['peptide.matchType'] = item[1]
+            elif item[0] == 'peptide.seq': #Int sum for all identified products used when preparing the final IA file
+                column_dict['peptide.seq_index'] = item[1]
+            elif item[0] == 'peptide.seqStart': #Int sum for all identified products used when preparing the final IA file
+                column_dict['peptide.seqStart'] = item[1]
+            elif item[0] == 'peptide.seqLength': #Sequence length
+                column_dict['peptide_seqLength_index'] = item[1]
+            elif item[0] == 'peptide.componentID':
+                column_dict['peptide_componentID_index'] = item[1]    
+            elif item[0] == 'peptide.MatchedProducts':
+                column_dict['peptide_MatchedProducts_index'] = item[1]    
+            elif item[0] == 'peptide.ConsectiveMatchedProducts':
+                column_dict['peptide_ConsectiveMatchedProducts_index'] = item[1]
+            elif item[0] == 'precursor.mhp':
+                column_dict['precursor.mhp'] = item[1]
+            elif item[0] == 'peptide.score':
+                column_dict['peptide_score_index'] = item[1]                
+            elif item[0] == 'peptide.MatchedProductsSumInten':
+                column_dict['peptide_MatchedProductsSumInten_index'] = item[1]                
+            elif item[0] == 'precursor.retT':
+                column_dict['precursor_retT_index'] = item[1]                
+            elif item[0] == 'precursor.inten':
+                column_dict['precursor_inten_index'] = item[1]
+            elif item[0] == 'precursor.z':
+                column_dict['precursor.z'] = item[1]
+            elif item[0] == 'precursor.Mobility':
+                column_dict['precursor.Mobility'] = item[1]
+            elif item[0] == 'peptidePrecursor.deltaMhpPPM':
+                column_dict['peptidePrecursor_deltaMhpPPM_index'] = item[1]
+            else:
+                pass
+        index_ID_list = list(range(0,len(header)))
+        for index in index_ID_list:
+            value = header[index_id]
+            ID_list.append(value)
+            index_id +=1
+        index_id = 0
+        for key in keys_list:
+            header_and_values = file_dict[key]        
+            entries = len(header_and_values)
+            List_ID_and_value =[]
             index_id = 0
-            for key in keys_list:
-                header_and_values = file_dict[key]        
-                entries = len(header_and_values)
-                List_ID_and_value =[]
-                index_id = 0
-                while index_id < number_of_IDs:
-                    while index_entries < entries:
-                        value = header_and_values[index_entries][index_id]
-                        if index_entries > 0:
-                            #This Block is used to extract Protein Identifiers so they can be presented to the user
-                            if index_id == 1:                                
-                                protein_identifier = str(value)
-                                if protein_identifier in protein_identifiers:
-                                    pass
-                                else:
-                                    protein_identifiers.append(str(protein_identifier))
-                            #Block End
-                            elif index_id == 14: #Int sum for all identified products
-                                value = float(value)
-                            elif index_id == 27: #Sequence length
-                                value = int(value)
-                            elif index_id == 29:# Compound ID, left empty to facilitate dynamx import
-                                value = ''
-                            elif index_id == 30: # Number of products
-                                value = int(value)
-                            elif index_id == 32: # Number of consecutive products
-                                value = int(value)
-                            elif index_id == 35: # Peptide Score
-                                value = float(value)
-                            elif index_id == 37: # Mathced product sum
-                                value = float(value)
-                            elif index_id == 48: #The RT
-                                value = float(value)
-                            elif index_id == 49: #Precursor intensity
-                                value = int(value)
-                            elif index_id == 62:# Mass delta
-                                value = float(value)
-                            else:
+            while index_id < len(header):
+                while index_entries < entries:
+                    value = header_and_values[index_entries][index_id]
+                    if index_entries > 0:
+                        #This Block is used to extract Protein Identifiers so they can be presented to the user
+                        if index_id == column_dict['protein_Entry_index']:                                
+                            protein_identifier = str(value)
+                            if protein_identifier in protein_identifiers:
                                 pass
-                        ID_and_value.append(value)
-                        index_entries += 1
-                    index_entries = 0
-                    index_id += 1
-                    List_ID_and_value.append(ID_and_value)
-                    ID_and_value = []
-                self.dict_to_be_sorted[key] = List_ID_and_value
-        elif number_of_IDs == 65:
-            index_ID_list = list(range(0,number_of_IDs))
-            for index in index_ID_list:
-                value = header[index_id]
-                if index_id == 17:
-                    pass
-                elif index_id == 46:
-                    pass
-                else:
-                    ID_list.append(value)
-                index_id +=1
-            index_id = 0
-            for key in keys_list:
-                header_and_values = file_dict[key]        
-                entries = len(header_and_values)
-                List_ID_and_value =[]
-                index_id = 0
-                while index_id < number_of_IDs:
-                    if index_id == 17:
-                        index_id += 1
-                    elif index_id == 46:
-                        index_id += 1
-                    else:
-                        while index_entries < entries:
-                            value = header_and_values[index_entries][index_id]
-                            if index_entries == 0:
-                                ID_and_value.append(value)
-                                index_entries += 1
                             else:
-                                if index_id == 1:
-                                    #This Block is used to extract Protein Identifiers so they can be presented to the user
-                                    protein_identifier = str(value)
-                                    if protein_identifier in protein_identifiers:
-                                        pass
-                                    else:
-                                        protein_identifiers.append(str(protein_identifier))
-                                    ID_and_value.append(protein_identifier)
-                                    #Block End
-                                elif index_id == 14: #Int sum for all identified products
-                                    value = float(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 17:
-                                    pass
-                                elif index_id == 28: #Sequence length
-                                    value = int(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 30:# Compound ID, left empty to facilitate dynamx import
-                                    value = ''
-                                    ID_and_value.append(value)
-                                elif index_id == 31: # Number of products
-                                    value = int(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 33: # Number of consecutive products
-                                    value = int(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 36: # Peptide Score
-                                    value = float(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 38: # Mathced product sum
-                                    value = float(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 46:
-                                    pass
-                                elif index_id == 50: #The RT
-                                    value = float(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 51: #Precursor intensity
-                                    value = int(value)
-                                    ID_and_value.append(value)
-                                elif index_id == 64:# Mass delta
-                                    value = float(value)
-                                    ID_and_value.append(value)
-                                else:
-                                    ID_and_value.append(value)
-                            index_entries += 1
-                        index_entries = 0
-                        index_id += 1
-                        List_ID_and_value.append(ID_and_value)
-                        ID_and_value = []
-                self.dict_to_be_sorted[key] = List_ID_and_value
-        else:
-            print("This is not a PLGS file")
-        End_time = datetime.datetime.now()
-        difference =  (End_time - Start_time).total_seconds()
+                                protein_identifiers.append(str(protein_identifier))
+                        #Block End
+                        elif index_id == column_dict['protein_MatchedProductIntenSum_index']:
+                            value = float(value)
+                        elif index_id == column_dict['peptide_seqLength_index']:
+                            value = int(value)
+                        elif index_id == column_dict['peptide_componentID_index']:
+                            value = ''
+                        elif index_id == column_dict['peptide_MatchedProducts_index']:
+                            value = int(value)
+                        elif index_id == column_dict['peptide_ConsectiveMatchedProducts_index']:
+                            value = int(value)
+                        elif index_id == column_dict['peptide_score_index']:
+                            value = float(value)
+                        elif index_id == column_dict['peptide_MatchedProductsSumInten_index']:
+                            value = float(value)
+                        elif index_id ==column_dict['precursor_retT_index']:
+                            value = float(value)
+                        elif index_id == column_dict['precursor_inten_index']:
+                            value = float(value)
+                        elif index_id == column_dict['peptidePrecursor_deltaMhpPPM_index']:
+                            value = float(value)
+                        else:
+                            pass
+                    ID_and_value.append(value)
+                    index_entries += 1
+                index_entries = 0
+                index_id += 1
+                List_ID_and_value.append(ID_and_value)
+                ID_and_value = []
+            self.dict_to_be_sorted[key] = List_ID_and_value
+        #End_time = datetime.datetime.now()
+        #difference =  (End_time - Start_time).total_seconds()
         #self.Dialog_insert("Seconds Spent in CSV_Parser {0}\n".format(difference))
         
     def csv_sorter (self):
@@ -1250,6 +1236,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         
         [id_index_header, id_index value, id_index value, id_index value, ...., id_index value]
         """
+        
         Start_time = datetime.datetime.now()
         list_of_keys = self.dict_to_be_sorted.keys()
         seq_dict = {}        
@@ -1257,7 +1244,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             entries = 1
             size = len(self.dict_to_be_sorted[key][0])
             while entries < size:
-                seq = self.dict_to_be_sorted[key][24][entries]                
+                seq = self.dict_to_be_sorted[key][column_dict['peptide.seq_index']][entries]                
                 if seq in seq_dict:
                     count = seq_dict[seq]
                     new_count = count + 1
@@ -1270,7 +1257,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             entries = 1
             pop_list = []  
             while entries < size:
-                value = self.dict_to_be_sorted[key][1][entries]
+                value = self.dict_to_be_sorted[key][column_dict['protein_Entry_index']][entries]
                 if value != Prot_ident:
                     pop_list.append(entries)
                 else:
@@ -1278,7 +1265,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][21][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptide.matchType']][entries]
                 banset = set(["InSource","NeutralLoss_H2O","NeutralLoss_NH3"])
                 if value in banset:
                     pop_list.append(entries)
@@ -1287,7 +1274,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][27][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptide_seqLength_index']][entries]
                 if value > MaxSeqLen or value < MinSeqLen:
                     pop_list.append(entries)
                 else:
@@ -1295,7 +1282,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][62][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptidePrecursor_deltaMhpPPM_index']][entries]
                 if value > MaxMHHErr or value < -MaxMHHErr:
                     pop_list.append(entries)
                 else:
@@ -1303,7 +1290,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][37][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptide_MatchedProductsSumInten_index']][entries]
                 if value < MinProdSum:
                     pop_list.append(entries)
                 else:
@@ -1311,7 +1298,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                seq = self.dict_to_be_sorted[key][24][entries]
+                seq = self.dict_to_be_sorted[key][column_dict['peptide.seq_index']][entries]
                 seq_count = seq_dict[seq]
                 if seq_count < NoOffRep :
                     pop_list.append(entries)
@@ -1320,7 +1307,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][30][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptide_MatchedProducts_index']][entries]
                 if value < MinProd:
                     pop_list.append(entries)
                 else:
@@ -1328,8 +1315,8 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:        
-                SeqLen = self.dict_to_be_sorted[key][27][entries]
-                NoProd = self.dict_to_be_sorted[key][30][entries]
+                SeqLen = self.dict_to_be_sorted[key][column_dict['peptide_seqLength_index']][entries]
+                NoProd = self.dict_to_be_sorted[key][column_dict['peptide_MatchedProducts_index']][entries]
                 if NoProd == 0 and MinProd == 0:
                     pass
                 elif NoProd == 0:
@@ -1343,7 +1330,8 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][32][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptide_ConsectiveMatchedProducts_index']
+                ][entries]
                 if value < MinConProd:
                     pop_list.append(entries)
                 else:
@@ -1351,7 +1339,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:
-                value = self.dict_to_be_sorted[key][35][entries]
+                value = self.dict_to_be_sorted[key][column_dict['peptide_score_index']][entries]
                 if value < MinScr:
                     pop_list.append(entries)
                 else:
@@ -1359,7 +1347,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entries += 1
             entries = 1
             while entries < size:      
-                value = self.dict_to_be_sorted[key][49][entries]
+                value = self.dict_to_be_sorted[key][column_dict['precursor_inten_index']][entries]
                 if value < MinInt :
                     pop_list.append(entries)
                 else:
@@ -1413,7 +1401,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             entries = 1
             size = len(self.sorted_dict[key][0])
             while entries < size:
-                seq = self.sorted_dict[key][24][entries]                
+                seq = self.sorted_dict[key][column_dict['peptide.seq_index']][entries]                
                 if seq in seq_dict:
                     count = seq_dict[seq]
                     new_count = count + 1
@@ -1427,13 +1415,13 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             entries = 1
             while entries < size:
                 entry_score = 0
-                value = self.sorted_dict[key][37][entries]
+                value = self.sorted_dict[key][column_dict['peptide_MatchedProductsSumInten_index']][entries]
                 if value < ScrMinProdSum:
                     status = "fail"
                 else:
                     entry_score += 1
                     status ="pass"
-                seq = self.sorted_dict[key][24][entries]
+                seq = self.sorted_dict[key][column_dict['peptide.seq_index']][entries]
                 MinProdSum_list.append((seq,status))
                 seq_count = seq_dict[seq]
                 if seq_count < ScrNoOffRep :
@@ -1442,15 +1430,15 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                     status = "pass"
                     entry_score += 1
                 MinNoOffRep_list.append((seq,status))
-                value = self.sorted_dict[key][30][entries]
+                value = self.sorted_dict[key][column_dict['peptide_MatchedProducts_index']][entries]
                 if value < ScrMinProd:
                     status = "fail"
                 else:
                     status = "pass"
                     entry_score += 1
                 MinProd_list.append((seq,status))
-                SeqLen = self.sorted_dict[key][27][entries]
-                NoProd = self.sorted_dict[key][30][entries]
+                SeqLen = self.sorted_dict[key][column_dict['peptide_seqLength_index']][entries]
+                NoProd = self.sorted_dict[key][column_dict['peptide_MatchedProducts_index']][entries]
                 if NoProd == 0 and ScrMinProd == 0:
                     status = "pass"
                     entry_score += 1
@@ -1464,21 +1452,21 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                         status = "pass"
                         entry_score += 1
                 MinMinProdPAA_list.append((seq,status))
-                value = self.sorted_dict[key][32][entries]
+                value = self.sorted_dict[key][column_dict['peptide_ConsectiveMatchedProducts_index']][entries]
                 if value < ScrMinConProd:
                     status = "fail"
                 else:
                     status = "pass"
                     entry_score += 1
                 MinConProd_list.append((seq,status))
-                value = self.sorted_dict[key][35][entries]
+                value = self.sorted_dict[key][column_dict['peptide_score_index']][entries]
                 if value < ScrMinScr:
                     status = "fail"
                 else:
                     status = "pass"
                     entry_score += 1
                 MinScr_list.append((seq,status))
-                value = self.sorted_dict[key][49][entries]
+                value = self.sorted_dict[key][column_dict['precursor_inten_index']][entries]
                 if value < ScrMinInt :
                     status = "fail"
                 else:
@@ -1547,8 +1535,8 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         seq_coverage = 0
         for ite in score_list:
             for item in ite:
-                sequence_start = int(self.sorted_dict[item[0]][26][item[1]])
-                seq_length = int(self.sorted_dict[item[0]][27][item[1]]) + sequence_start                           
+                sequence_start = int(self.sorted_dict[item[0]][column_dict['peptide.seqStart']][item[1]])
+                seq_length = int(self.sorted_dict[item[0]][column_dict['peptide_seqLength_index']][item[1]]) + sequence_start                           
                 segment = list(range(sequence_start, seq_length))
                 Segment_list.append(segment) 
         seq_start_list = []
@@ -1562,8 +1550,8 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         Segment_list = []        
         while score_level >= 0:            
             for item in score_list[score_level]:
-                sequence_start = int(self.sorted_dict[item[0]][26][item[1]])
-                seq_length = int(self.sorted_dict[item[0]][27][item[1]]) + sequence_start                           
+                sequence_start = int(self.sorted_dict[item[0]][column_dict['peptide.seqStart']][item[1]])
+                seq_length = int(self.sorted_dict[item[0]][column_dict['peptide_seqLength_index']][item[1]]) + sequence_start                           
                 segment = tuple(range(sequence_start, seq_length))
                 Segment_list.append(segment)
             value_list = set()
@@ -1662,8 +1650,8 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         self.seq_coverage = 0
         for ite in score_list:
             for item in ite:
-                sequence_start = int(self.sorted_dict[item[0]][26][item[1]])
-                seq_length = int(self.sorted_dict[item[0]][27][item[1]]) + sequence_start                           
+                sequence_start = int(self.sorted_dict[item[0]][column_dict['peptide.seqStart']][item[1]])
+                seq_length = int(self.sorted_dict[item[0]][column_dict['peptide_seqLength_index']][item[1]]) + sequence_start                           
                 segment = list(range(sequence_start, seq_length))
                 Segment_list.append(segment) 
         seq_start_list = []
@@ -1673,13 +1661,14 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             seq_end_list.append(item[-1])
         starting_point = min(seq_start_list)
         end_point = max(seq_end_list)
+        Use_seq_cutoff = 0
         while score_level >= MinSeqScr:
             if self.seq_coverage == 100 and Use_seq_cutoff == 1:
                 score_level -= 1
             else:
                 for item in score_list[score_level]:
-                    sequence_start = int(self.sorted_dict[item[0]][26][item[1]])
-                    seq_length = int(self.sorted_dict[item[0]][27][item[1]]) + sequence_start                           
+                    sequence_start = int(self.sorted_dict[item[0]][column_dict['peptide.seqStart']][item[1]])
+                    seq_length = int(self.sorted_dict[item[0]][column_dict['peptide_seqLength_index']][item[1]]) + sequence_start                           
                     segment = list(range(sequence_start, seq_length))
                     Segment_list.append(segment)
                 value_list = set()
@@ -1730,12 +1719,13 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         seq_set = set()
         #Creates the list that used to gain information about the different RT's, IM's and number of times it was identified
         to_be_data_mined = []
+        
         for scores in score_range:
             ids = score_list[scores]
             for item in ids:
                 pre_csv = []
                 NoId = 0
-                while NoId < 63:
+                while NoId < len(header):
                     pre_csv.append(self.sorted_dict[item[0]][NoId][item[1]])
                     NoId += 1
                 to_be_data_mined.append(pre_csv)
@@ -1744,27 +1734,29 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         for scores in score_range:
             ids = score_list[scores]
             for item in ids:
-                seq = self.sorted_dict[item[0]][24][item[1]]
+                seq = self.sorted_dict[item[0]][column_dict['peptide.seq_index']][item[1]]
                 if seq in seq_set:
                     pass
                 else:
                     seq_set.add(seq)
                     sorted_list.append((item[0],item[1]))
-        to_csv = [('protein.key','protein.Entry','protein.Accession','protein.Description','protein.dataBaseType','protein.score','protein.falsePositiveRate',
-                   'protein.avgMass','protein.MatchedProducts','protein.matchedPeptides','protein.digestPeps','protein.seqCover(%)','protein.MatchedPeptideIntenSum',
-                   'protein.top3MatchedPeptideIntenSum','protein.MatchedProductIntenSum','protein.fmolOnColumn','protein.ngramOnColumn','protein.Key_ForHomologs',
-                   'protein.SumForTotalProteins','peptide.Rank','peptide.Pass','peptide.matchType','peptide.modification','peptide.mhp','peptide.seq',
-                   'peptide.OriginatingSeq','peptide.seqStart','peptide.seqLength','peptide.pI','peptide.componentID','peptide.MatchedProducts',
-                   'peptide.UniqueProducts','peptide.ConsectiveMatchedProducts','peptide.ComplementaryMatchedProducts','peptide.rawScore','peptide.score',
-                   'peptide.(X)-P Bond','peptide.MatchedProductsSumInten','peptide.MatchedProductsTheoretical','peptide.MatchedProductsString','peptide.ModelRT',
-                   'peptide.Volume','peptide.CSA','peptide.ModelDrift','peptide.RelIntensity','precursor.leID','precursor.mhp','precursor.mhpCal','precursor.retT',
-                   'precursor.inten','precursor.calcInten','precursor.charge','precursor.z','precursor.mz','precursor.Mobility','precursor.MobilitySD',
-                   'precursor.fwhm','precursor.liftOffRT','precursor.infUpRT','precursor.infDownRT','precursor.touchDownRT','prec.rmsFWHMDelta',
-                   'peptidePrecursor.deltaMhpPPM')]
+        #to_csv = [('protein.key','protein.Entry','protein.Accession','protein.Description','protein.dataBaseType','protein.score','protein.falsePositiveRate',
+        #           'protein.avgMass','protein.MatchedProducts','protein.matchedPeptides','protein.digestPeps','protein.seqCover(%)','protein.MatchedPeptideIntenSum',
+        #           'protein.top3MatchedPeptideIntenSum','protein.MatchedProductIntenSum','protein.fmolOnColumn','protein.ngramOnColumn','protein.Key_ForHomologs',
+        #           'protein.SumForTotalProteins','peptide.Rank','peptide.Pass','peptide.matchType','peptide.modification','peptide.mhp','peptide.seq',
+        #           'peptide.OriginatingSeq','peptide.seqStart','peptide.seqLength','peptide.pI','peptide.componentID','peptide.MatchedProducts',
+        #           'peptide.UniqueProducts','peptide.ConsectiveMatchedProducts','peptide.ComplementaryMatchedProducts','peptide.rawScore','peptide.score',
+        #           'peptide.(X)-P Bond','peptide.MatchedProductsSumInten','peptide.MatchedProductsTheoretical','peptide.MatchedProductsString','peptide.ModelRT',
+        #           'peptide.Volume','peptide.CSA','peptide.ModelDrift','peptide.RelIntensity','precursor.leID','precursor.mhp','precursor.mhpCal','precursor.retT',
+        #           'precursor.inten','precursor.calcInten','precursor.charge','precursor.z','precursor.mz','precursor.Mobility','precursor.MobilitySD',
+        #           'precursor.fwhm','precursor.liftOffRT','precursor.infUpRT','precursor.infDownRT','precursor.touchDownRT','prec.rmsFWHMDelta',
+        #           'peptidePrecursor.deltaMhpPPM')]
+        to_csv = [(header)]
+        header_len = len(header)
         for item in sorted_list:
             pre_csv = []
             NoId = 0
-            while NoId < 63:
+            while NoId < header_len:
                 pre_csv.append(self.sorted_dict[item[0]][NoId][item[1]])
                 NoId += 1
             to_csv.append(pre_csv)
@@ -1826,15 +1818,18 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             for item in score_list:
                 list_for_sorting = []
                 for ite in item:
-                    sequence = self.sorted_dict[ite[0]][24][ite[1]]
-                    sequence_start = int(self.sorted_dict[ite[0]][26][ite[1]]) + 1
-                    seq_length = int(self.sorted_dict[ite[0]][27][ite[1]]) + sequence_start
-                    modifications = self.sorted_dict[ite[0]][22][ite[1]]
-                    MHP = self.sorted_dict[ite[0]][46][ite[1]]
-                    RT = self.sorted_dict[ite[0]][48][ite[1]]
-                    IM = self.sorted_dict[ite[0]][54][ite[1]]
-                    charge_state = self.sorted_dict[ite[0]][52][ite[1]]
-                    Intensity = self.sorted_dict[ite[0]][49][ite[1]]
+                    sequence = self.sorted_dict[ite[0]][column_dict['peptide.seq_index']][ite[1]]
+                    sequence_start = int(self.sorted_dict[ite[0]][column_dict['peptide.seqStart']][ite[1]]) + 1
+                    seq_length = int(self.sorted_dict[ite[0]][column_dict['peptide_seqLength_index']][ite[1]]) + sequence_start
+                    modifications = self.sorted_dict[ite[0]][column_dict['peptide.modification']][ite[1]]
+                    MHP = self.sorted_dict[ite[0]][column_dict['precursor.mhp']][ite[1]]
+                    RT = self.sorted_dict[ite[0]][column_dict['precursor_retT_index']][ite[1]]
+                    if 'precursor.Mobility' in column_dict.keys():
+                        IM = self.sorted_dict[ite[0]][column_dict['precursor.Mobility']][ite[1]]
+                    else:
+                        IM = 0
+                    charge_state = self.sorted_dict[ite[0]][column_dict['precursor.z']][ite[1]]
+                    Intensity = self.sorted_dict[ite[0]][column_dict['precursor_inten_index']][ite[1]]
                     list_for_sorting.append([sequence, sequence_start, seq_length, modifications, MHP, RT, IM, charge_state, Intensity])
                 list_for_sorting.sort(key=itemgetter(1))
                 grouped = groupby(list_for_sorting, itemgetter(0))
@@ -1865,8 +1860,8 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
         master_entries = len(self.master_dict[key])
         master_entry_index = 1
         while master_entry_index < master_entries:
-            sequence = self.master_dict[key][master_entry_index][24]
-            seq_start = self.master_dict[key][master_entry_index][26]
+            sequence = self.master_dict[key][master_entry_index][column_dict['peptide.seq_index']]
+            seq_start = self.master_dict[key][master_entry_index][column_dict['peptide.seqStart']]
             master_seq_dict[sequence] = seq_start
             master_entry_index += 1
         master_seqs = master_seq_dict.keys()
@@ -1878,12 +1873,15 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             file_entries = len(self.data_mining_dict['Data mining'])
             file_entry = 1
             while file_entry < file_entries:
-                match_seq = self.data_mining_dict['Data mining'][file_entry][24]
+                match_seq = self.data_mining_dict['Data mining'][file_entry][column_dict['peptide.seq_index']]
                 if match_seq == item:
-                    RT = self.data_mining_dict['Data mining'][file_entry][48]                   
+                    RT = self.data_mining_dict['Data mining'][file_entry][column_dict['precursor_retT_index']]                   
                     RT_list.append(RT)
-                    IM = self.data_mining_dict['Data mining'][file_entry][54]
-                    Charge = self.data_mining_dict['Data mining'][file_entry][52]
+                    if 'precursor.Mobility' in column_dict.keys():
+                        IM = self.data_mining_dict['Data mining'][file_entry][column_dict['precursor.Mobility']]
+                    else:
+                        IM = 0
+                    Charge = self.data_mining_dict['Data mining'][file_entry][column_dict['precursor.z']]
                     IM_list.append([Charge, IM])
                     occurrence_count += 1
                     file_entry += 1
@@ -1918,7 +1916,10 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
             for itemRT in RT_list:
                 RT_sum += itemRT
                 No_RT_values += 1
-            Average = RT_sum/No_RT_values
+            if No_RT_values == 0:
+                Average = 0
+            else:
+                Average = RT_sum/No_RT_values
             spread_sum = 0
             for itemRT in RT_list:
                 RT = itemRT
@@ -1933,12 +1934,13 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entry_list = self.data_mining_dict['Data mining']
                 entry_index = 0
                 for entry in entry_list:
-                    seq = entry[24]
+                    seq = entry[column_dict['peptide.seq_index']]
                     value = []
                     if seq == item: 
                         id_index = 0
-                        while id_index < 63:
-                            if id_index == 30: #Number of products
+                        precursor_im = 0
+                        while id_index < len(header):                            
+                            if id_index == column_dict['peptide_MatchedProducts_index']: #Number of products
                                 Num_prod = entry[id_index]
                                 id_index += 1
                             #elif id_index == 32: #Number of consecutive products
@@ -1959,19 +1961,19 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                             #elif id_index == 37: #The int sum of the products
                             #    value.append(entry[id_index])
                             #    id_index += 1
-                            elif id_index == 48: #The RT value
+                            elif id_index == column_dict['precursor_retT_index']: #The RT value
                                 retention_time = entry[id_index]
                                 id_index += 1
-                            elif id_index == 49: #Precursor intensity
+                            elif id_index == column_dict['precursor_inten_index']: #Precursor intensity
                                 precursor_int = entry[id_index]
                                 id_index += 1
-                            elif id_index == 52: #The charge state for which the precursor information is recorded
+                            elif id_index == column_dict['precursor.z']: #The charge state for which the precursor information is recorded
                                 z = entry[id_index]
                                 id_index += 1
-                            elif id_index == 54: #The precursor IM value
+                            elif 'precursor.Mobility' in column_dict.keys() and id_index == column_dict['precursor.Mobility']: #The precursor IM value
                                 precursor_im = entry[id_index]
                                 id_index += 1
-                            elif id_index == 62: #Mass delta
+                            elif id_index == column_dict['peptidePrecursor_deltaMhpPPM_index']: #Mass delta
                                 delta_mass = entry[id_index]
                                 id_index += 1
                             else:
@@ -1993,9 +1995,9 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entry_index += 1
             elif entry_index > 0:
                 entry_value = []
-                seq = self.master_dict['Master list'][entry_index][24]
-                while id_index < 63:
-                    if id_index == 48:
+                seq = self.master_dict['Master list'][entry_index][column_dict['peptide.seq_index']]
+                while id_index < len(header):
+                    if id_index == column_dict['precursor_retT_index']:
                         RT = Seq_and_RT[seq]
                         RT_str = "{0:.4f}".format(RT)
                         id_index += 1
@@ -2049,7 +2051,7 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 PepFrag1.append(self.final_edit['Master list'][0])
                 entry_index += 1
             else:
-                id_index = 21
+                id_index = column_dict['peptide.matchType']
                 value = self.final_edit['Master list'][entry_index][id_index]
                 value2 = self.final_edit['Master list'][entry_index]
                 if value == 'PepFrag1':
@@ -2087,30 +2089,30 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entry_index += 1
             elif entry_index == 1:
                 entry_value = []
-                while id_index < 63:
-                    if id_index == 5:
-                        score = "{0:.4f}".format(float(sorted_dict['Master list'][1][5]))
+                while id_index < len(header):
+                    if id_index == column_dict['protein.score']:
+                        score = "{0:.4f}".format(float(sorted_dict['Master list'][1][column_dict['protein.score']]))
                         id_index += 1
                         entry_value.append(score)
-                    if id_index == 7:
-                        value = "{0:.4f}".format(float(sorted_dict['Master list'][1][7]))
+                    if id_index == column_dict['protein.avgMass']:
+                        value = "{0:.4f}".format(float(sorted_dict['Master list'][1][column_dict['protein.avgMass']]))
                         id_index += 1
                         entry_value.append(value)
-                    if id_index == 8:
+                    if id_index == column_dict['protein.MatchedProducts']:
                         Pep_match_prodc = 0
                         while entry_index2 < number_of_entries:
-                            Pep_match_prodc += int(sorted_dict['Master list'][entry_index2][30])
+                            Pep_match_prodc += int(sorted_dict['Master list'][entry_index2][column_dict['peptide_MatchedProducts_index']])
                             entry_index2 += 1
                         entry_index2 = 1
                         id_index += 1
                         Pep_match_prodc = "{0}".format(Pep_match_prodc)
                         entry_value.append(Pep_match_prodc)
-                    if id_index == 9:
+                    if id_index == column_dict['protein.matchedPeptides']:
                         PepFrag1 = 0
                         PepFrag2 = 0
                         VarMod = 0
                         while entry_index2 < number_of_entries:
-                            value = sorted_dict['Master list'][entry_index2][21] 
+                            value = sorted_dict['Master list'][entry_index2][column_dict['peptide.matchType']] 
                             if value == 'PepFrag1':
                                 PepFrag1 += 1
                                 entry_index2 += 1
@@ -2126,61 +2128,61 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                         matched_peptides = "{0}".format(PepFrag1 + PepFrag2 + VarMod)
                         id_index += 1
                         entry_value.append(matched_peptides)
-                    if id_index == 10:
-                       digested_peptides = sorted_dict['Master list'][1][10]
+                    if id_index == column_dict['protein.digestPeps']:
+                       digested_peptides = sorted_dict['Master list'][1][column_dict['protein.digestPeps']]
                        id_index += 1
                        entry_value.append(digested_peptides)
-                    if id_index == 11:
-                        SeqCover = "{0:.2f}".format(float(sorted_dict['Master list'][1][11]))
+                    if id_index == column_dict['protein.seqCover(%)']:
+                        SeqCover = "{0:.2f}".format(float(sorted_dict['Master list'][1][column_dict['protein.seqCover(%)']]))
                         id_index += 1
                         entry_value.append(SeqCover)
-                    if id_index == 12:
+                    if id_index == column_dict['protein.MatchedPeptideIntenSum']:
                        Matchedpepintsum = 0
                        while entry_index2 < number_of_entries:
-                           Matchedpepintsum += int(sorted_dict['Master list'][entry_index2][49])
+                           Matchedpepintsum += int(sorted_dict['Master list'][entry_index2][column_dict['precursor_inten_index']])
                            entry_index2 += 1
                        Matchedpepintsum = "{0}".format(Matchedpepintsum)
                        entry_index2 = 1
                        id_index += 1 
                        entry_value.append(Matchedpepintsum)
-                    if id_index == 13:
+                    if id_index == column_dict['protein.top3MatchedPeptideIntenSum']:
                         top3MatchedPepIntSum_list = []
                         while entry_index2 < number_of_entries:
-                           top3MatchedPepIntSum_list.append(int(sorted_dict['Master list'][entry_index2][49]))
+                           top3MatchedPepIntSum_list.append(int(sorted_dict['Master list'][entry_index2][column_dict['precursor_inten_index']]))
                            entry_index2 += 1
                         top3MatchedPepIntSum_list.sort(reverse = True)
                         top3matchedpepsum = "{0}".format(top3MatchedPepIntSum_list[0] + top3MatchedPepIntSum_list[1] + top3MatchedPepIntSum_list[2])
                         entry_index2 = 1
                         id_index += 1
                         entry_value.append(top3matchedpepsum)
-                    if id_index == 14:
+                    if id_index == column_dict['protein_MatchedProductIntenSum_index']:
                         matchedproductionsum = 0
                         while entry_index2 < number_of_entries:
-                            matchedproductionsum += int(sorted_dict['Master list'][entry_index2][37])
+                            matchedproductionsum += int(sorted_dict['Master list'][entry_index2][column_dict['peptide_MatchedProductsSumInten_index']])
                             entry_index2 += 1
                         entry_index2 = 1
                         id_index += 1
                         matchedproductionsum = "{0}".format(matchedproductionsum)
                         entry_value.append(matchedproductionsum)
-                    if id_index == 18:
+                    if id_index == column_dict['protein.SumForTotalProteins']:
                         Sumforprotein = 1
                         id_index += 1
                         entry_value.append(Sumforprotein)
-                    if id_index == 19:
+                    if id_index == column_dict['peptide.Rank']:
                         peprank = 1
                         id_index += 1
                         entry_value.append(peprank)
                         peprank +=1
-                    if id_index == 30:
-                        value = str(sorted_dict['Master list'][1][30])
+                    if id_index == column_dict['peptide_MatchedProducts_index']:
+                        value = str(sorted_dict['Master list'][1][column_dict['peptide_MatchedProducts_index']])
                         id_index += 1
                         entry_value.append(value)
-                    if id_index == 49:
-                        value = str(sorted_dict['Master list'][1][49])
+                    if id_index == column_dict['precursor_inten_index']:
+                        value = str(sorted_dict['Master list'][1][column_dict['precursor_inten_index']])
                         id_index += 1
                         entry_value.append(value)
-                    if id_index == 62:
-                        value = "{0:.4f}".format(sorted_dict['Master list'][1][62])
+                    if id_index == column_dict['peptidePrecursor_deltaMhpPPM_index']:
+                        value = "{0:.4f}".format(sorted_dict['Master list'][1][column_dict['peptidePrecursor_deltaMhpPPM_index']])
                         id_index += 1
                         entry_value.append(value)
                     else:
@@ -2191,53 +2193,53 @@ class FunctionLibrary(Application, RT_Selection_Treeview):
                 entry_index += 1
             elif entry_index > 1:
                 entry_value = []
-                while id_index < 63:
-                    if id_index == 5:
+                while id_index < len(header):
+                    if id_index == column_dict['protein.score']:
                        id_index += 1
                        entry_value.append(score)
-                    if id_index == 7:
-                        value = "{0:.4f}".format(float(sorted_dict['Master list'][entry_index][7]))
+                    if id_index == column_dict['protein.avgMass']:
+                        value = "{0:.4f}".format(float(sorted_dict['Master list'][entry_index][column_dict['protein.avgMass']]))
                         id_index += 1
                         entry_value.append(value)
-                    if id_index == 8:
+                    if id_index == column_dict['protein.MatchedProducts']:
                         id_index += 1
                         entry_value.append(Pep_match_prodc)
-                    if id_index == 9:
+                    if id_index == column_dict['protein.matchedPeptides']:
                         id_index += 1
                         entry_value.append(matched_peptides)
-                    if id_index == 10:
+                    if id_index == column_dict['protein.digestPeps']:
                        id_index += 1
                        entry_value.append(digested_peptides)
-                    if id_index == 11:
+                    if id_index == column_dict['protein.seqCover(%)']:
                         id_index += 1
                         entry_value.append(SeqCover)
-                    if id_index == 12:
+                    if id_index == column_dict['protein.MatchedPeptideIntenSum']:
                        id_index += 1
                        entry_value.append(Matchedpepintsum)
-                    if id_index == 13:
+                    if id_index == column_dict['protein.top3MatchedPeptideIntenSum']:
                         id_index += 1
                         entry_value.append(top3matchedpepsum)
-                    if id_index == 14:
+                    if id_index == column_dict['protein_MatchedProductIntenSum_index']:
                        id_index += 1
                        entry_value.append(matchedproductionsum)
-                    if id_index == 18:
+                    if id_index == column_dict['protein.SumForTotalProteins']:
                         Sumforprotein = 0
                         id_index += 1
                         entry_value.append(Sumforprotein)
-                    if id_index == 19:
+                    if id_index == column_dict['peptide.Rank']:
                         id_index += 1
                         entry_value.append(peprank)
                         peprank +=1
-                    if id_index == 30:
-                        value = str(sorted_dict['Master list'][entry_index][30])
+                    if id_index == column_dict['peptide_MatchedProducts_index']:
+                        value = str(sorted_dict['Master list'][entry_index][column_dict['peptide_MatchedProducts_index']])
                         id_index += 1
                         entry_value.append(value)
-                    if id_index == 49:
-                        value = str(sorted_dict['Master list'][entry_index][49])
+                    if id_index == column_dict['precursor_inten_index']:
+                        value = str(sorted_dict['Master list'][entry_index][column_dict['precursor_inten_index']])
                         id_index += 1
                         entry_value.append(value)
-                    if id_index == 62:
-                        value = "{0:.4f}".format(sorted_dict['Master list'][entry_index][62])
+                    if id_index == column_dict['peptidePrecursor_deltaMhpPPM_index']:
+                        value = "{0:.4f}".format(sorted_dict['Master list'][entry_index][column_dict['peptidePrecursor_deltaMhpPPM_index']])
                         id_index += 1
                         entry_value.append(value)
                     else:
